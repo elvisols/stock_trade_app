@@ -7,24 +7,23 @@ import lombok.ToString;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.Collection;
 
 @Getter
 @Setter
 @Entity
-@ToString
 @NoArgsConstructor
 @Table(name = "users")
-public class User implements UserDetails {
+public class User extends BaseEntity implements UserDetails {
 
-    @Id
-    private Long id;
+    private String fullname;
     private String username;
     private String password;
     private String email;
+    private Integer age;
+    @OneToOne(cascade = CascadeType.ALL)
+    private Account account;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

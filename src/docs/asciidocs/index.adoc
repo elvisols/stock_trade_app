@@ -1,0 +1,20 @@
+
+= User REST Service API Guide
+<elvisouk@yahoo.com>
+v1.0.0, 03/02/2020
+:toc: right
+:toc-title: API Content
+:sectnums:
+:icons: font
+:doctype: book
+:source-highlighter: pygments
+
+[NOTE]
+Webservice running at http://localhost:8899
+
+== Introduction
+This is a simple REST API that stores, updates, retrieves, and deletes User entities.
+
+include::users.adoc[]
+
+include::footer.adoc[]

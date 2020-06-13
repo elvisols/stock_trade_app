@@ -7,9 +7,9 @@ public final class Constants {
 
     public static final int PASSWORD_MIN_LENGTH = 6;
 
-    public static final String LOGIN_URL = "/api/users/login";
+    public static final String LOGIN_URL = "/users/login";
 
-    public static final String REGISTER_URL = "/api/users";
+    public static final String REGISTER_URL = "/users";
 
     public static final String H2_URL = "/h2-console/**";
 

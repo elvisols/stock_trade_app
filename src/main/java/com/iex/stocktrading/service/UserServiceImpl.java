@@ -13,11 +13,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 
 @Slf4j
 @Service
+@Transactional
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
@@ -36,13 +39,17 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDTO save(NewUserDTO userDTO) {
-        log.info("Saving a new UserDTO...{}", userDTO);
+        log.info("Saving a newUserDTO...{}", userDTO);
 
         User user = newUserMapper.toEntity(userDTO);
 
+        user.getAccount().setBalance(BigDecimal.ZERO);
+
         user.setPassword(encoder.encode(user.getPassword()));
 
-//        log.info("Saving User...{} Hobbies: {}", user, user.getHobbies());
+        user.getAccount().setUser(user);
+
+        log.info("Saving User...{} ", user);
 
 //        stockRepository.saveAll(user.getHobbies());
 

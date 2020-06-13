@@ -7,8 +7,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
-import static com.iex.stocktrading.config.Constants.PASSWORD_MIN_LENGTH;
-
 @Component
 public class UserValidator implements Validator {
 
@@ -22,12 +20,8 @@ public class UserValidator implements Validator {
 
         NewUserDTO user = (NewUserDTO) object;
 
-        if (user.getPassword().length() < PASSWORD_MIN_LENGTH) {
-            errors.rejectValue("password", "Length", "Password must be at least " + PASSWORD_MIN_LENGTH + " characters");
-        }
-
         if (!user.getPassword().equals(user.getConfirm_password())) {
-            errors.rejectValue("confirmPassword", "Match", "Passwords must match");
+            errors.rejectValue("confirm_password", "Match", "Passwords must match");
         }
 
     }

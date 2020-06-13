@@ -11,14 +11,16 @@ import java.util.List;
 @Mapper(componentModel = "spring", uses = {})
 public interface UserMapper extends EntityMapper<UserDTO, User> {
 
-//    @Mapping(source = "hobbies", target = "hobby")
-//    @Mapping(source = "color", target = "favourite_color")
+    @Mapping(source = "account.balance", target = "balance")
+    @Mapping(source = "account.no", target = "account")
+    @Mapping(source = "fullname", target = "full_name")
     UserDTO toDto(User user);
 
     List<UserDTO> toDtoList(List<User> users);
 
-//    @Mapping(source = "favourite_color", target = "color")
-//    @Mapping(source = "hobby", target = "hobbies")
+    @Mapping(source = "full_name", target = "fullname")
+    @Mapping(source = "account", target = "account.no")
+    @Mapping(source = "balance", target = "account.balance")
     User toEntity(UserDTO userDTO);
 
 }
