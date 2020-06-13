@@ -1,10 +1,8 @@
 package com.iex.stocktrading.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.iex.stocktrading.model.User;
 import com.iex.stocktrading.model.dto.NewUserDTO;
 import com.iex.stocktrading.model.dto.UserDTO;
-import com.iex.stocktrading.repository.UserRepository;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -12,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.constraints.ConstraintDescriptions;
 import org.springframework.restdocs.payload.JsonFieldType;
@@ -21,11 +18,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
-import java.util.Optional;
-
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.put;

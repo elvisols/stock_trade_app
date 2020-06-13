@@ -23,4 +23,13 @@ public class Stock {
 
     @OneToMany(mappedBy = "stock", fetch = FetchType.LAZY)
     private Set<UserStock> stocks;
+
+    @Override
+    public String toString() {
+        return "Stock{" +
+                "symbol='" + symbol + '\'' +
+                ", exchange='" + exchange + '\'' +
+                ", name='" + name + '\'' +
+                '}';
+    }
 }
