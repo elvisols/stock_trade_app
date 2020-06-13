@@ -19,7 +19,6 @@ import java.util.Collections;
 import static com.iex.stocktrading.config.Constants.HEADER_STRING;
 import static com.iex.stocktrading.config.Constants.TOKEN_PREFIX;
 
-
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Autowired

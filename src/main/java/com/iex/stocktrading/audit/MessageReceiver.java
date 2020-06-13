@@ -15,7 +15,11 @@ class MessageReceiver {
     @JmsListener(destination = "auditlog.queue")
     public void receiveQueue(CustomHttpTrace httpTrace) {
 
-        repository.save(httpTrace);
+        try {
+            repository.save(httpTrace);
+        } catch (Exception e) {
+            System.out.println("Error:> " + e.getMessage());
+        }
 
     }
 

@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 //import javax.validation.Valid;
 import javax.validation.Valid;
+import java.math.BigDecimal;
 import java.util.Optional;
 
 @Slf4j
@@ -79,6 +80,15 @@ public class UsersController {
         UserDTO p = userService.update(user);
 
         return new ResponseEntity<>(p, HttpStatus.OK);
+    }
+
+
+    @PostMapping("/fund-account/{amount}")
+    public ResponseEntity<?> fundme(@PathVariable BigDecimal amount){
+
+        UserDTO newUser = userService.fundme(amount);
+
+        return  new ResponseEntity<UserDTO>(newUser, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")

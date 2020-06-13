@@ -8,6 +8,7 @@ import com.iex.stocktrading.model.dto.mapper.NewUserMapper;
 import com.iex.stocktrading.model.dto.mapper.UserMapper;
 import com.iex.stocktrading.repository.StockRepository;
 import com.iex.stocktrading.repository.UserRepository;
+import com.iex.stocktrading.security.SecurityUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -67,9 +68,6 @@ public class UserServiceImpl implements UserService {
             tmp.setFullname(user.getFullname() == null ? tmp.getFullname() : user.getFullname());
             tmp.setEmail(user.getEmail() == null ? tmp.getEmail() : user.getEmail());
             tmp.setAge(user.getAge() == null ? tmp.getAge() : user.getAge());
-//            if(user.getAccount() != null && user.getAccount().getBalance() != null) {
-//                tmp.getAccount().setBalance(user.getAccount().getBalance());
-//            }
             user = tmp;
         } else {
             throw new UserNotFoundException(user.getId().toString());
@@ -81,8 +79,27 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public UserDTO fundme(BigDecimal amount) {
+
+        User user = null;
+
+        Optional<String> u = SecurityUtils.getCurrentUserLogin();
+
+        if(u.isPresent()) {
+            user = userRepository.findByUsername(SecurityUtils.getCurrentUserLogin().get());
+            user.getAccount().setBalance(user.getAccount().getBalance().add(amount));
+        } else {
+            throw new UserNotFoundException("User");
+        }
+
+        user = userRepository.save(user);
+
+        return userMapper.toDto(user);
+    }
+
+    @Override
     public Page<UserDTO> findAll(Pageable pageable) {
-        log.debug("Request to get all Users");
+        log.info("Request to get all Users");
 
         return userRepository.findAll(pageable)
                 .map(userMapper::toDto);
@@ -90,7 +107,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Optional<UserDTO> findOne(Long id) {
-        log.debug("Request to get User: {}", id);
+        log.info("Request to get User: {}", id);
 
         return userRepository.findById(id)
                 .map(userMapper::toDto);

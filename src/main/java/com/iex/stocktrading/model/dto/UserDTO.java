@@ -1,6 +1,6 @@
 package com.iex.stocktrading.model.dto;
 
-import com.iex.stocktrading.model.Account;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 
 import javax.validation.constraints.Digits;
@@ -14,6 +14,7 @@ import java.math.BigDecimal;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserDTO {
 
     private Long id;
@@ -29,8 +30,11 @@ public class UserDTO {
     @Digits(message = "Your age must be an integer value", integer = 10, fraction = 0)
     private Integer age;
 
+
+    @NotNull(message = "Please enter your account number")
     @Digits(message = "Account must consist of digits only.", integer = 11, fraction = 2)
     private String account;
 
     private BigDecimal balance;
+
 }

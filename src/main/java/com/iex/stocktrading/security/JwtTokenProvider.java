@@ -15,6 +15,7 @@ import static com.iex.stocktrading.config.Constants.SECRET;
 
 @Component
 public class JwtTokenProvider {
+
     public String generateToken(Authentication authentication) {
         User user = (User) authentication.getPrincipal();
         Date now = new Date(System.currentTimeMillis());
@@ -54,13 +55,6 @@ public class JwtTokenProvider {
             System.out.println("..JWT claims string is empty");
         }
         return false;
-    }
-
-    public Long getUserIdFromJWT(String token) {
-        Claims claims = Jwts.parser().setSigningKey(SECRET).parseClaimsJws(token).getBody();
-        String id = (String) claims.get("id");
-
-        return Long.parseLong(id);
     }
 
     public String getUsernameFromJWT(String token) {

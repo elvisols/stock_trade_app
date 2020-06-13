@@ -7,7 +7,7 @@ public final class Constants {
 
     public static final int PASSWORD_MIN_LENGTH = 6;
 
-    public static final String LOGIN_URL = "/users/login";
+    public static final String LOGIN_URL = "/auth/login";
 
     public static final String REGISTER_URL = "/users";
 

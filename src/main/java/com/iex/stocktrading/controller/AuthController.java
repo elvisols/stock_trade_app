@@ -45,6 +45,7 @@ public class AuthController {
         ResponseEntity<?> errorMap = handle.MapValidationService(result);
         if(errorMap != null) return errorMap;
 
+
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         loginRequest.getUsername(),
@@ -53,6 +54,7 @@ public class AuthController {
         );
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
+
         String jwt = TOKEN_PREFIX +  tokenProvider.generateToken(authentication);
 
         return ResponseEntity.ok(new JWTResponse(true, jwt));

@@ -39,5 +39,7 @@ public class StocktradingApplication implements CommandLineRunner {
 
         stockService.saveAll(Arrays.asList(stocks));
 
+        System.out.println("----------------->>>     Application ready !       <<<---------------------");
+
     }
 }

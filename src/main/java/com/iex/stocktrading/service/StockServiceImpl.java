@@ -28,8 +28,6 @@ public class StockServiceImpl implements StockService {
     @Override
     public void saveAll(List<Stock> stocks) {
 
-        log.info("Request to save Stocks : {}", stocks);
-
         stockRepository.saveAll(stocks);
     }
 
