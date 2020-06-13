@@ -20,7 +20,7 @@ import java.util.Optional;
 
 @Slf4j
 @Service
-@Transactional
+//@Transactional
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
@@ -39,7 +39,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDTO save(NewUserDTO userDTO) {
-        log.info("Saving a newUserDTO...{}", userDTO);
 
         User user = newUserMapper.toEntity(userDTO);
 
@@ -49,9 +48,7 @@ public class UserServiceImpl implements UserService {
 
         user.getAccount().setUser(user);
 
-        log.info("Saving User...{} ", user);
-
-//        stockRepository.saveAll(user.getHobbies());
+        log.info("User: {}", user);
 
         user = userRepository.save(user);
 
@@ -60,27 +57,23 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDTO update(UserDTO userDTO) {
-        log.debug("Updating User: {}", userDTO);
 
         User user = userMapper.toEntity(userDTO);
 
-        Optional<User> p = this.findById(user.getId());
+        Optional<User> u = this.findById(user.getId());
 
-        if(p.isPresent()) {
-            User tmp = p.get();
-//            tmp.setFirst_name(user.getFirst_name() == null ? tmp.getFirst_name() : user.getFirst_name());
-//            tmp.setLast_name(user.getLast_name() == null ? tmp.getLast_name() : user.getLast_name());
-//            tmp.setAge(user.getAge() == null ? tmp.getAge() : user.getAge());
-//            tmp.setColor(user.getColor() == null ? tmp.getColor() : user.getColor());
-//            tmp.setHobbies(user.getHobbies() == null ? tmp.getHobbies() : user.getHobbies());
+        if(u.isPresent()) {
+            User tmp = u.get();
+            tmp.setFullname(user.getFullname() == null ? tmp.getFullname() : user.getFullname());
+            tmp.setEmail(user.getEmail() == null ? tmp.getEmail() : user.getEmail());
+            tmp.setAge(user.getAge() == null ? tmp.getAge() : user.getAge());
+//            if(user.getAccount() != null && user.getAccount().getBalance() != null) {
+//                tmp.getAccount().setBalance(user.getAccount().getBalance());
+//            }
             user = tmp;
         } else {
             throw new UserNotFoundException(user.getId().toString());
         }
-
-        log.info("Updating User ... {}", user);
-
-//        stockRepository.saveAll(user.getHobbies());
 
         user = userRepository.save(user);
 

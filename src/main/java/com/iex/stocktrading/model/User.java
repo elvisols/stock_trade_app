@@ -8,7 +8,10 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -22,8 +25,12 @@ public class User extends BaseEntity implements UserDetails {
     private String password;
     private String email;
     private Integer age;
+
     @OneToOne(cascade = CascadeType.ALL)
     private Account account;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
+    private Set<UserStock> stocks;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -48,5 +55,18 @@ public class User extends BaseEntity implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "fullname='" + fullname + '\'' +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", email='" + email + '\'' +
+                ", age=" + age +
+                ", account=" + account +
+                ", stocks=" + stocks +
+                '}';
     }
 }

@@ -1,9 +1,7 @@
 package com.iex.stocktrading.model.dto;
 
 import com.iex.stocktrading.model.Account;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.Email;
@@ -14,6 +12,8 @@ import java.math.BigDecimal;
 @Getter
 @Setter
 @ToString
+@NoArgsConstructor
+@AllArgsConstructor
 public class UserDTO {
 
     private Long id;

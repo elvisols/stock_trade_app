@@ -4,9 +4,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -16,12 +15,12 @@ import javax.persistence.Table;
 public class Stock {
 
     @Id
-    private String keyword;
+    private String symbol;
 
-    private String description = "n/a";
+    private String exchange;
 
-    public Stock(String keyword) {
-        this.keyword = keyword;
-    }
+    private String name;
 
+    @OneToMany(mappedBy = "stock", fetch = FetchType.LAZY)
+    private Set<UserStock> stocks;
 }
