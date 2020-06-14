@@ -1,5 +1,6 @@
 package com.iex.stocktrading.service;
 
+import com.iex.stocktrading.model.User;
 import com.iex.stocktrading.model.dto.NewUserDTO;
 import com.iex.stocktrading.model.dto.UserDTO;
 import org.springframework.data.domain.Page;
@@ -23,7 +24,12 @@ public interface UserService {
     /**
      * Fund user account entity
      */
-    UserDTO fundme(BigDecimal amount);
+    UserDTO deposit(BigDecimal amount);
+
+    /**
+     * Deplete user account entity
+     */
+    UserDTO withdraw(BigDecimal amount);
 
     /**
      * Get all the users.
@@ -34,6 +40,11 @@ public interface UserService {
      * Get the user by Id.
      */
     Optional<UserDTO> findOne(Long id);
+
+    /**
+     * Get the user by Id.
+     */
+    User findByUsername(String username);
 
     /**
      * Delete user by Id.

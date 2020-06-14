@@ -10,6 +10,7 @@ import com.iex.stocktrading.model.dto.UserStockDTO;
 import com.iex.stocktrading.service.StockService;
 import com.iex.stocktrading.service.UserStockService;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.Optional;
 
@@ -81,7 +83,9 @@ public class UserStocksController {
 
         Optional<UserStockDTO> newStock = usService.buy(stock_symbol, reqBody.getShares());
 
-        if(!newStock.isPresent()) throw new UserStockNotFoundException(stock_symbol);
+        System.out.println(newStock);
+
+//        if(!newStock.isPresent()) throw new UserStockNotFoundException(stock_symbol);
 
         return  new ResponseEntity<UserStockDTO>(newStock.get(), HttpStatus.OK);
     }
@@ -106,7 +110,7 @@ public class UserStocksController {
 @Setter
 class TradeRequest {
 
-    @NotBlank(message = "Please specify how many number of shares you want to buy")
+    @NotNull(message = "Please specify how many number of shares you want to buy")
     @Digits(message = "Shares must be an integer value", integer = 11, fraction = 0)
     private Integer shares;
 

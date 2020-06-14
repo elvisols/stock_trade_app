@@ -14,6 +14,7 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @Table(name = "stocks")
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Stock {
 
     @Id
@@ -22,6 +23,10 @@ public class Stock {
     private String exchange;
 
     private String name;
+
+    public Stock(String symbol) {
+        this.symbol = symbol;
+    }
 
     @JsonIgnore
     @OneToMany(mappedBy = "stock", fetch = FetchType.LAZY)

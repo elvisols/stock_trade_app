@@ -7,11 +7,12 @@ import com.iex.stocktrading.model.dto.UserStockDTO;
 import com.iex.stocktrading.model.dto.mapper.UserStockMapper;
 import com.iex.stocktrading.repository.UserStockRepository;
 import com.iex.stocktrading.security.SecurityUtils;
+import com.iex.stocktrading.service.util.TradeFacade;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -23,6 +24,9 @@ public class UserStockServiceImpl implements UserStockService {
 
     private final UserStockMapper userStockMapper;
 
+    @Autowired
+    private TradeFacade tradeFacade;
+
     public UserStockServiceImpl(UserStockRepository userStockRepository, UserStockMapper userStockMapper) {
         this.userStockRepository = userStockRepository;
         this.userStockMapper = userStockMapper;
@@ -31,7 +35,7 @@ public class UserStockServiceImpl implements UserStockService {
     @Override
     public UserStockDTO save(UserStockDTO userStockDTO) {
 
-        log.debug("Request to save UserStock : {}", userStockDTO);
+        log.info("Request to save UserStock : {}", userStockDTO);
 
         UserStock userStock = userStockMapper.toEntity(userStockDTO);
 
@@ -51,6 +55,9 @@ public class UserStockServiceImpl implements UserStockService {
             // create new record
             userStock = userStockRepository.save(userStock);
         }
+
+        log.info("returning pojo... {}", userStock);
+        log.info("returning dto... {}", userStockMapper.toDto(userStock));
 
         return userStockMapper.toDto(userStock);
     }
@@ -82,13 +89,30 @@ public class UserStockServiceImpl implements UserStockService {
     }
 
     @Override
+    public Optional<UserStockDTO> findByUserAndStock(Long id, String stock) {
+
+        log.debug("Request to get UserAndStock : {}", id);
+
+        return userStockRepository.findAllByUser_IdAndStock_Symbol(id, stock)
+                .map(userStockMapper::toDto);
+    }
+
+    @Override
     public Optional<UserStockDTO> buy(String symbol, Integer shares) {
-        return Optional.empty();
+
+        tradeFacade.setSymbol(symbol);
+        tradeFacade.setShares(shares);
+
+        return Optional.of(tradeFacade.buy());
     }
 
     @Override
     public Optional<UserStockDTO> sell(String symbol, Integer shares) {
-        return Optional.empty();
+
+        tradeFacade.setSymbol(symbol);
+        tradeFacade.setShares(shares);
+
+        return Optional.of(tradeFacade.sell());
     }
 
 }

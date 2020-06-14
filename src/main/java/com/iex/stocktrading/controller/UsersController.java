@@ -86,7 +86,7 @@ public class UsersController {
     @PostMapping("/fund-account/{amount}")
     public ResponseEntity<?> fundme(@PathVariable BigDecimal amount){
 
-        UserDTO newUser = userService.fundme(amount);
+        UserDTO newUser = userService.deposit(amount);
 
         return  new ResponseEntity<UserDTO>(newUser, HttpStatus.OK);
     }

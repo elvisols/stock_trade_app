@@ -3,6 +3,7 @@ package com.iex.stocktrading.service;
 import com.iex.stocktrading.model.IEXRecord;
 import com.iex.stocktrading.model.Stock;
 import com.iex.stocktrading.repository.StockRepository;
+import com.iex.stocktrading.service.util.IEXIntegrator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -65,7 +66,7 @@ public class StockServiceImpl implements StockService {
 
         log.debug("Request to get Stock : {}", symbol);
 
-        return restTemplate.getForObject("https://cloud-sse.iexapis.com/stable/stock/" + symbol + "/quote?token=" + IEX_TOKEN, IEXRecord.class);
+        return IEXIntegrator.fetch(symbol);
 
     }
 

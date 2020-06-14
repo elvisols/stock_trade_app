@@ -26,4 +26,11 @@ public class UserStock extends BaseEntity {
 
     BigDecimal currentPrice;
 
+    @Override
+    public String toString() {
+        return "UserStock{" +
+                "shares=" + shares +
+                ", currentPrice=" + currentPrice +
+                '}';
+    }
 }

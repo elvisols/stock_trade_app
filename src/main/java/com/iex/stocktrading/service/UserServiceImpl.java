@@ -21,7 +21,6 @@ import java.util.Optional;
 
 @Slf4j
 @Service
-//@Transactional
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
@@ -79,18 +78,39 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDTO fundme(BigDecimal amount) {
+    public UserDTO deposit(BigDecimal amount) {
 
         User user = null;
 
         Optional<String> u = SecurityUtils.getCurrentUserLogin();
 
         if(u.isPresent()) {
-            user = userRepository.findByUsername(SecurityUtils.getCurrentUserLogin().get());
+            user = this.findByUsername(SecurityUtils.getCurrentUserLogin().get());
             user.getAccount().setBalance(user.getAccount().getBalance().add(amount));
         } else {
             throw new UserNotFoundException("User");
         }
+
+        user = userRepository.save(user);
+
+        return userMapper.toDto(user);
+    }
+
+    @Override
+    public UserDTO withdraw(BigDecimal amount) {
+
+        User user = null;
+
+        Optional<String> u = SecurityUtils.getCurrentUserLogin();
+
+        if(u.isPresent()) {
+            user = this.findByUsername(SecurityUtils.getCurrentUserLogin().get());
+            user.getAccount().setBalance(user.getAccount().getBalance().subtract(amount));
+        } else {
+            throw new UserNotFoundException("User");
+        }
+
+        log.info("About to withdraw: " + user);
 
         user = userRepository.save(user);
 
@@ -111,6 +131,13 @@ public class UserServiceImpl implements UserService {
 
         return userRepository.findById(id)
                 .map(userMapper::toDto);
+    }
+
+    @Override
+    public User findByUsername(String username) {
+        log.info("Request to get User: {}", username);
+
+        return userRepository.findByUsername(username);//).map(userMapper::toDto);
     }
 
     @Override

@@ -25,4 +25,14 @@ public class Account extends BaseEntity {
     @MapsId
     @OneToOne
     private User user;
+
+    @Override
+    public String toString() {
+        return "Account{" +
+                "id='" + getId() + '\'' +
+                "no='" + no + '\'' +
+                ", name='" + name + '\'' +
+                ", balance=" + balance +
+                '}';
+    }
 }

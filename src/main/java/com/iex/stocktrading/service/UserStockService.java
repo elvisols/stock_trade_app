@@ -17,4 +17,6 @@ public interface UserStockService {
     Optional<UserStockDTO> buy(String symbol, Integer shares);
 
     Optional<UserStockDTO> sell(String symbol, Integer shares);
+
+    Optional<UserStockDTO> findByUserAndStock(Long id, String stock);
 }

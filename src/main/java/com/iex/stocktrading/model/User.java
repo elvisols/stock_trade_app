@@ -61,6 +61,7 @@ public class User extends BaseEntity implements UserDetails {
     @Override
     public String toString() {
         return "User{" +
+                "id='" + getId() + '\'' +
                 "fullname='" + fullname + '\'' +
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
