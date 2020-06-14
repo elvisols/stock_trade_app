@@ -3,6 +3,7 @@ package com.iex.stocktrading.controller;
 import com.iex.stocktrading.exception.UserStockNotFoundException;
 import com.iex.stocktrading.helper.MapValidationErrorHandler;
 import com.iex.stocktrading.helper.ResponseWrapper;
+import com.iex.stocktrading.model.IEXRecord;
 import com.iex.stocktrading.model.Stock;
 import com.iex.stocktrading.model.dto.NewUserDTO;
 import com.iex.stocktrading.model.dto.UserStockDTO;
@@ -19,7 +20,9 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotBlank;
+import java.math.BigDecimal;
 import java.util.Optional;
 
 @Slf4j
@@ -57,60 +60,54 @@ public class UserStocksController {
         return userStock.get();
     }
 
+    @GetMapping("/symbol/{stock_symbol}")
+    public ResponseEntity<IEXRecord> getStockSymbols(@PathVariable String stock_symbol) {
+
+        return  new ResponseEntity<IEXRecord>(stockService.findOne(stock_symbol), HttpStatus.OK);
+    }
+
     @GetMapping("/symbols")
     public ResponseEntity<?> getStockSymbols(Pageable pageable) {
 
-        Page<Stock> stocks = stockService.findAll(pageable);
-
-        return  new ResponseEntity<ResponseWrapper>(new ResponseWrapper(stocks), HttpStatus.OK);
+        return  new ResponseEntity<ResponseWrapper>(new ResponseWrapper(stockService.findAll(pageable)), HttpStatus.OK);
     }
 
     @PostMapping("/buy/{stock_symbol}")
-    public ResponseEntity<?> buyStock(@Valid @RequestBody BuyRequest reqBody, BindingResult result) {
+    public ResponseEntity<?> buyStock(@PathVariable String stock_symbol, @Valid @RequestBody TradeRequest reqBody, BindingResult result) {
 
         // Catch possible errors in buy stock request
         ResponseEntity<?> errorMap = handle.MapValidationService(result);
         if(errorMap != null) return errorMap;
 
-        UserStockDTO newStock = null; //usService.save(user);
+        Optional<UserStockDTO> newStock = usService.buy(stock_symbol, reqBody.getShares());
 
-        return  new ResponseEntity<UserStockDTO>(newStock, HttpStatus.OK);
+        if(!newStock.isPresent()) throw new UserStockNotFoundException(stock_symbol);
+
+        return  new ResponseEntity<UserStockDTO>(newStock.get(), HttpStatus.OK);
     }
 
     @PostMapping("/sell/{stock_symbol}")
-    public ResponseEntity<?> sellStock(@Valid @RequestBody NewUserDTO user, BindingResult result){
+    public ResponseEntity<?> sellStock(@PathVariable String stock_symbol, @Valid @RequestBody TradeRequest reqBody, BindingResult result){
 
         // Catch possible errors in sell stock request
         ResponseEntity<?> errorMap = handle.MapValidationService(result);
         if(errorMap != null) return errorMap;
 
-        UserStockDTO newStock = null; //sService.save(user);
+        Optional<UserStockDTO> soldStock = usService.sell(stock_symbol, reqBody.getShares());
 
-        return  new ResponseEntity<UserStockDTO>(newStock, HttpStatus.OK);
+        if(!soldStock.isPresent()) throw new UserStockNotFoundException(stock_symbol);
+
+        return  new ResponseEntity<UserStockDTO>(soldStock.get(), HttpStatus.OK);
     }
 
 }
 
 @Getter
 @Setter
-class BuyRequest {
+class TradeRequest {
 
-    @NotBlank(message = "***> Username cannot be blank")
-    private String username;
-
-    @NotBlank(message = "***> Password cannot be blank")
-    private String password;
-
-}
-
-@Getter
-@Setter
-class SellRequest {
-
-    @NotBlank(message = "***> Username cannot be blank")
-    private String username;
-
-    @NotBlank(message = "***> Password cannot be blank")
-    private String password;
+    @NotBlank(message = "Please specify how many number of shares you want to buy")
+    @Digits(message = "Shares must be an integer value", integer = 11, fraction = 0)
+    private Integer shares;
 
 }

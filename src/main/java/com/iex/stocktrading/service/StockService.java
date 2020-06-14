@@ -1,6 +1,7 @@
 package com.iex.stocktrading.service;
 
 
+import com.iex.stocktrading.model.IEXRecord;
 import com.iex.stocktrading.model.Stock;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -34,5 +35,6 @@ public interface StockService {
      * @param symbol the stock id
      * @return the entity
      */
-    Optional<Stock> findOne(String symbol);
+    IEXRecord findOne(String symbol);
+
 }

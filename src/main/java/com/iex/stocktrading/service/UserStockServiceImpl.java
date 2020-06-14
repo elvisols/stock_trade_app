@@ -81,4 +81,14 @@ public class UserStockServiceImpl implements UserStockService {
                 .map(userStockMapper::toDto);
     }
 
+    @Override
+    public Optional<UserStockDTO> buy(String symbol, Integer shares) {
+        return Optional.empty();
+    }
+
+    @Override
+    public Optional<UserStockDTO> sell(String symbol, Integer shares) {
+        return Optional.empty();
+    }
+
 }

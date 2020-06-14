@@ -13,4 +13,8 @@ public interface UserStockService {
     Page<UserStockDTO> findAllByUser(Pageable pageable);
 
     Optional<UserStockDTO> findOne(Long id);
+
+    Optional<UserStockDTO> buy(String symbol, Integer shares);
+
+    Optional<UserStockDTO> sell(String symbol, Integer shares);
 }

@@ -14,6 +14,8 @@ import org.springframework.web.client.RestTemplate;
 import java.util.Arrays;
 import java.util.List;
 
+import static com.iex.stocktrading.config.Constants.IEX_TOKEN;
+
 @EnableCaching
 @EnableAspectJAutoProxy
 @SpringBootApplication
@@ -33,7 +35,7 @@ public class StocktradingApplication implements CommandLineRunner {
     public void run(String... args) throws Exception {
 
         // Bootstrap available Stocks
-        ResponseEntity<Stock[]> response = restTemplate.getForEntity("https://cloud-sse.iexapis.com/stable/ref-data/symbols?token=pk_50b799876c4541b89d194f994bdc064f", Stock[].class);
+        ResponseEntity<Stock[]> response = restTemplate.getForEntity("https://cloud-sse.iexapis.com/stable/ref-data/symbols?token=" + IEX_TOKEN, Stock[].class);
 
         Stock[] stocks = response.getBody();
 
