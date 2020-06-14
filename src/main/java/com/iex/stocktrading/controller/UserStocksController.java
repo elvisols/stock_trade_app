@@ -1,14 +1,12 @@
 package com.iex.stocktrading.controller;
 
-import com.iex.stocktrading.exception.UserNotFoundException;
 import com.iex.stocktrading.exception.UserStockNotFoundException;
 import com.iex.stocktrading.helper.MapValidationErrorHandler;
 import com.iex.stocktrading.helper.ResponseWrapper;
-import com.iex.stocktrading.helper.UserValidator;
+import com.iex.stocktrading.model.Stock;
 import com.iex.stocktrading.model.dto.NewUserDTO;
-import com.iex.stocktrading.model.dto.UserDTO;
 import com.iex.stocktrading.model.dto.UserStockDTO;
-import com.iex.stocktrading.service.UserService;
+import com.iex.stocktrading.service.StockService;
 import com.iex.stocktrading.service.UserStockService;
 import lombok.Getter;
 import lombok.Setter;
@@ -30,18 +28,20 @@ import java.util.Optional;
 public class UserStocksController {
 
     private UserStockService usService;
+    private StockService stockService;
 
     private MapValidationErrorHandler handle;
 
-    public UserStocksController(UserStockService usService, MapValidationErrorHandler handle) {
+    public UserStocksController(UserStockService usService, StockService stockService, MapValidationErrorHandler handle) {
         this.usService = usService;
+        this.stockService = stockService;
         this.handle = handle;
     }
 
     @GetMapping
-    public ResponseEntity<?> getAllStocksByUser(@RequestParam(defaultValue = "0") Long user, Pageable pageable) {
+    public ResponseEntity<?> getAllStocksByUser(Pageable pageable) {//@RequestParam(defaultValue = "0") Long user,
 
-        Page<UserStockDTO> userStocks = usService.findAllByUser(user, pageable);
+        Page<UserStockDTO> userStocks = usService.findAllByUser(pageable);
 
         log.debug("Returning all user stocks: {}", userStocks);
 
@@ -55,6 +55,14 @@ public class UserStocksController {
         if (!userStock.isPresent()) throw new UserStockNotFoundException(id.toString());
 
         return userStock.get();
+    }
+
+    @GetMapping("/symbols")
+    public ResponseEntity<?> getStockSymbols(Pageable pageable) {
+
+        Page<Stock> stocks = stockService.findAll(pageable);
+
+        return  new ResponseEntity<ResponseWrapper>(new ResponseWrapper(stocks), HttpStatus.OK);
     }
 
     @PostMapping("/buy/{stock_symbol}")

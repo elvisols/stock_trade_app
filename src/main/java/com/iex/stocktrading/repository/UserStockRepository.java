@@ -7,5 +7,5 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 
 public interface UserStockRepository extends PagingAndSortingRepository<UserStock, Long> {
 
-    Page<UserStock> findAllByUser(Long username, Pageable pageable);
+    Page<UserStock> findAllByUser_Username(String username, Pageable pageable);
 }

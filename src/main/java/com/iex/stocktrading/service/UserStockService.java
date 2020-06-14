@@ -10,7 +10,7 @@ public interface UserStockService {
 
     UserStockDTO save(UserStockDTO userStockDTO);
 
-    Page<UserStockDTO> findAllByUser(Long user, Pageable pageable);
+    Page<UserStockDTO> findAllByUser(Pageable pageable);
 
     Optional<UserStockDTO> findOne(Long id);
 }

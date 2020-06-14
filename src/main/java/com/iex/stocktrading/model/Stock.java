@@ -1,5 +1,7 @@
 package com.iex.stocktrading.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -21,6 +23,7 @@ public class Stock {
 
     private String name;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "stock", fetch = FetchType.LAZY)
     private Set<UserStock> stocks;
 

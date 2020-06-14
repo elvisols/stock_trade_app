@@ -1,10 +1,12 @@
 package com.iex.stocktrading.service;
 
+import com.iex.stocktrading.exception.UserNotFoundException;
 import com.iex.stocktrading.exception.UserStockNotFoundException;
 import com.iex.stocktrading.model.UserStock;
 import com.iex.stocktrading.model.dto.UserStockDTO;
 import com.iex.stocktrading.model.dto.mapper.UserStockMapper;
 import com.iex.stocktrading.repository.UserStockRepository;
+import com.iex.stocktrading.security.SecurityUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -54,12 +56,20 @@ public class UserStockServiceImpl implements UserStockService {
     }
 
     @Override
-    public Page<UserStockDTO> findAllByUser(Long user, Pageable pageable) {
+    public Page<UserStockDTO> findAllByUser(Pageable pageable) {
 
-        log.debug("Request to get all UserStocks by {}", user);
+        Optional<String> u = SecurityUtils.getCurrentUserLogin();
 
-        return userStockRepository.findAllByUser(user, pageable)
-                .map(userStockMapper::toDto);
+        log.debug("Request to get all UserStocks by {}", u);
+
+        if(u.isPresent()) {
+            return userStockRepository.findAllByUser_Username(u.get(), pageable)
+                    .map(userStockMapper::toDto);
+        } else {
+            throw new UserNotFoundException("User");
+        }
+
+
     }
 
     @Override

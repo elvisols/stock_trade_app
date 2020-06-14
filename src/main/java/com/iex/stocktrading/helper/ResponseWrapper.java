@@ -12,10 +12,10 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ResponseWrapper {
 
-	private List<?> person;
+	private List<?> payload;
 	
 	public ResponseWrapper(Page<?> page) {
-		this.person = page.getContent();
+		this.payload = page.getContent();
 	}
 
 }
