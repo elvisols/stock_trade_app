@@ -4,7 +4,9 @@ import com.iex.stocktrading.exception.UserNotFoundException;
 import com.iex.stocktrading.helper.MapValidationErrorHandler;
 import com.iex.stocktrading.helper.ResponseWrapper;
 import com.iex.stocktrading.helper.UserValidator;
+import com.iex.stocktrading.model.EActivity;
 import com.iex.stocktrading.model.dto.NewUserDTO;
+import com.iex.stocktrading.model.dto.TransactionDTO;
 import com.iex.stocktrading.model.dto.UserDTO;
 import com.iex.stocktrading.service.UserService;
 import lombok.extern.slf4j.Slf4j;
@@ -15,9 +17,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-//import javax.validation.Valid;
 import javax.validation.Valid;
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.util.Optional;
 
 @Slf4j
@@ -48,13 +50,9 @@ public class UsersController {
     }
 
     @GetMapping("/transactions")
-    public ResponseEntity<?> getAllTransactions(@RequestParam(required = false) String start, @RequestParam(required = false) String end, Pageable pageable) {
+    public Page<TransactionDTO> getAllTransactions(@RequestParam(required = false, defaultValue = "all" ) EActivity activity, @RequestParam(required = false) Instant start, @RequestParam(required = false) Instant end, Pageable pageable) {
 
-        Page<UserDTO> userDTOs = userService.findAll(pageable);
-
-        log.debug("Getting all users: {}", userDTOs);
-
-        return new ResponseEntity<ResponseWrapper>(new ResponseWrapper(userDTOs), HttpStatus.OK);
+        return userService.getTransactionSummary(activity, start, end, pageable);
     }
 
     @GetMapping("/{id}")

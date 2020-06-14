@@ -1,5 +1,9 @@
 package com.iex.stocktrading.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -24,7 +28,8 @@ public class Transaction {
     @Column(precision = 2, columnDefinition = "decimal(11,2) default 0.00")
     private BigDecimal amount;
     private Date timestamp;
-    @ManyToOne
+    @JsonProperty( value = "user")
+    @ManyToOne(fetch = FetchType.LAZY)
     private User user;
     @ManyToOne
     private Stock stock;

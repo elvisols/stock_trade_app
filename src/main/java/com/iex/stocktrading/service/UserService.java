@@ -1,12 +1,16 @@
 package com.iex.stocktrading.service;
 
+import com.iex.stocktrading.model.EActivity;
+import com.iex.stocktrading.model.Transaction;
 import com.iex.stocktrading.model.User;
 import com.iex.stocktrading.model.dto.NewUserDTO;
+import com.iex.stocktrading.model.dto.TransactionDTO;
 import com.iex.stocktrading.model.dto.UserDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.util.Optional;
 
 public interface UserService {
@@ -50,5 +54,15 @@ public interface UserService {
      * Delete user by Id.
      */
     void delete(Long id);
+
+    /**
+     * Get transaction summary
+     * @param activity
+     * @param start
+     * @param end
+     * @param pageable
+     * @return
+     */
+    Page<TransactionDTO> getTransactionSummary(EActivity activity, Instant start, Instant end, Pageable pageable);
     
 }

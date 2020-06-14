@@ -1,12 +1,17 @@
 package com.iex.stocktrading.service;
 
 import com.iex.stocktrading.exception.UserNotFoundException;
+import com.iex.stocktrading.model.EActivity;
+import com.iex.stocktrading.model.Transaction;
 import com.iex.stocktrading.model.User;
 import com.iex.stocktrading.model.dto.NewUserDTO;
+import com.iex.stocktrading.model.dto.TransactionDTO;
 import com.iex.stocktrading.model.dto.UserDTO;
 import com.iex.stocktrading.model.dto.mapper.NewUserMapper;
+import com.iex.stocktrading.model.dto.mapper.TransactionMapper;
 import com.iex.stocktrading.model.dto.mapper.UserMapper;
 import com.iex.stocktrading.repository.StockRepository;
+import com.iex.stocktrading.repository.TransactionRepository;
 import com.iex.stocktrading.repository.UserRepository;
 import com.iex.stocktrading.security.SecurityUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -17,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.util.Optional;
 
 @Slf4j
@@ -24,17 +30,19 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
-    private final StockRepository stockRepository;
+    private final TransactionRepository transactionRepository;
     private final BCryptPasswordEncoder encoder;
     private final UserMapper userMapper;
     private final NewUserMapper newUserMapper;
+    private final TransactionMapper transactionMapper;
 
-    public UserServiceImpl(UserRepository userRepository, StockRepository stockRepository, BCryptPasswordEncoder encoder, UserMapper userMapper, NewUserMapper newUserMapper) {
+    public UserServiceImpl(UserRepository userRepository, StockRepository stockRepository, BCryptPasswordEncoder encoder, UserMapper userMapper, NewUserMapper newUserMapper, TransactionRepository transactionRepository, TransactionMapper transactionMapper) {
         this.userRepository = userRepository;
-        this.stockRepository = stockRepository;
+        this.transactionRepository = transactionRepository;
         this.encoder = encoder;
         this.userMapper = userMapper;
         this.newUserMapper = newUserMapper;
+        this.transactionMapper = transactionMapper;
     }
 
     @Override
@@ -147,6 +155,20 @@ public class UserServiceImpl implements UserService {
         log.debug("Request to delete User: {}", id);
 
         userRepository.deleteById(id);
+    }
+
+    @Override
+    public Page<TransactionDTO> getTransactionSummary(EActivity activity, Instant start, Instant end, Pageable pageable) {
+
+        Optional<String> loginUser = SecurityUtils.getCurrentUserLogin();
+
+        if(activity.compareTo(EActivity.all) == 0) {
+            // fetch all transactions
+            return transactionRepository.findAllByUser_Username(loginUser.get(), pageable).map(transactionMapper::toDto);
+        } else {
+            // fetch transactions by activities performed.
+            return transactionRepository.findAllByUser_UsernameAndActivity(loginUser.get(), activity, pageable).map(transactionMapper::toDto);
+        }
     }
 
     public Optional<User> findById(Long id) {

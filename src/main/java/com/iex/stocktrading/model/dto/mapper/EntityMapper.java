@@ -31,21 +31,4 @@ public interface EntityMapper <D, E> {
         return user;
     }
 
-//    default List<String> mapFromHobby(List<Hobby> hobbies) {
-//        List<String> flattenHobbies = new ArrayList<>(hobbies.size());
-//
-//        for(Hobby hobby: hobbies) {
-//            flattenHobbies.add(hobby.getKeyword());
-//        }
-//        return flattenHobbies;
-//    }
-//
-//    default List<Hobby> mapFromString(List<String> flattenHobbies) {
-//        List<Hobby> hobbies = new ArrayList<>(flattenHobbies.size());
-//
-//        for(String hobby: flattenHobbies) {
-//            hobbies.add(new Hobby(hobby));
-//        }
-//        return hobbies;
-//    }
 }
