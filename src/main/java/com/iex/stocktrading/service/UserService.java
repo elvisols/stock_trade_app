@@ -11,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.Date;
 import java.util.Optional;
 
 public interface UserService {
@@ -63,6 +64,6 @@ public interface UserService {
      * @param pageable
      * @return
      */
-    Page<TransactionDTO> getTransactionSummary(EActivity activity, Instant start, Instant end, Pageable pageable);
+    Page<TransactionDTO> getTransactionSummary(EActivity activity, Date start, Date end, Pageable pageable);
     
 }

@@ -9,11 +9,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
+
 @Repository
 public interface TransactionRepository extends PagingAndSortingRepository<Transaction, Long> {
 
-    Page<Transaction> findAllByUser_Username(String user, Pageable pageable);
+    Page<Transaction> findAllByUser_UsernameAndTimestampBetween(String user, Date from, Date to, Pageable pageable);
 
-    Page<Transaction> findAllByUser_UsernameAndActivity(String user, EActivity activity, Pageable pageable);
+    Page<Transaction> findAllByUser_UsernameAndActivityAndTimestampBetween(String user, EActivity activity, Date from, Date to, Pageable pageable);
 
 }

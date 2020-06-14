@@ -28,7 +28,7 @@ public class Transaction {
     @Column(precision = 2, columnDefinition = "decimal(11,2) default 0.00")
     private BigDecimal amount;
     private Date timestamp;
-    @JsonProperty( value = "user")
+    @JsonProperty( value = "password", access = JsonProperty.Access.READ_WRITE)
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
     @ManyToOne

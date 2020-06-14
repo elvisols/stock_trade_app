@@ -12,6 +12,7 @@ import com.iex.stocktrading.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.Date;
 import java.util.Optional;
 
 @Slf4j
@@ -50,9 +52,14 @@ public class UsersController {
     }
 
     @GetMapping("/transactions")
-    public Page<TransactionDTO> getAllTransactions(@RequestParam(required = false, defaultValue = "all" ) EActivity activity, @RequestParam(required = false) Instant start, @RequestParam(required = false) Instant end, Pageable pageable) {
+    public Page<TransactionDTO> getAllTransactions(
+            // start default from 3 days ago
+            @RequestParam(required = false, defaultValue = "#{new java.util.Date((new java.util.Date()).getTime()-3*24*60*60*1000)}") @DateTimeFormat(pattern="yyyy-MM-dd") Date from,
+            @RequestParam(required = false, defaultValue = "#{new java.util.Date()}") @DateTimeFormat(pattern="yyyy-MM-dd") Date to,
+            @RequestParam(required = false, defaultValue = "all" ) EActivity activity,
+            Pageable pageable) {
 
-        return userService.getTransactionSummary(activity, start, end, pageable);
+        return userService.getTransactionSummary(activity, from, to, pageable);
     }
 
     @GetMapping("/{id}")
@@ -89,7 +96,6 @@ public class UsersController {
 
         return new ResponseEntity<>(p, HttpStatus.OK);
     }
-
 
     @PostMapping("/fund-account/{amount}")
     public ResponseEntity<?> fundme(@PathVariable BigDecimal amount){

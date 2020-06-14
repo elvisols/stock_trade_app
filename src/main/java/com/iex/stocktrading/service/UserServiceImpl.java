@@ -23,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.Date;
 import java.util.Optional;
 
 @Slf4j
@@ -147,7 +148,7 @@ public class UserServiceImpl implements UserService {
     public User findByUsername(String username) {
         log.info("Request to get User: {}", username);
 
-        return userRepository.findByUsername(username);//).map(userMapper::toDto);
+        return userRepository.findByUsername(username);
     }
 
     @Override
@@ -158,16 +159,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Page<TransactionDTO> getTransactionSummary(EActivity activity, Instant start, Instant end, Pageable pageable) {
+    public Page<TransactionDTO> getTransactionSummary(EActivity activity, Date from, Date to, Pageable pageable) {
 
         Optional<String> loginUser = SecurityUtils.getCurrentUserLogin();
 
         if(activity.compareTo(EActivity.all) == 0) {
             // fetch all transactions
-            return transactionRepository.findAllByUser_Username(loginUser.get(), pageable).map(transactionMapper::toDto);
+            return transactionRepository.findAllByUser_UsernameAndTimestampBetween(loginUser.get(), from, to, pageable).map(transactionMapper::toDto);
         } else {
             // fetch transactions by activities performed.
-            return transactionRepository.findAllByUser_UsernameAndActivity(loginUser.get(), activity, pageable).map(transactionMapper::toDto);
+            return transactionRepository.findAllByUser_UsernameAndActivityAndTimestampBetween(loginUser.get(), activity, from, to, pageable).map(transactionMapper::toDto);
         }
     }
 
