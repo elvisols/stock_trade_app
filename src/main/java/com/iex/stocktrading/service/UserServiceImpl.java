@@ -91,6 +91,8 @@ public class UserServiceImpl implements UserService {
             throw new UserNotFoundException("User");
         }
 
+        log.info("About to deposit: " + user);
+
         user = userRepository.save(user);
 
         return userMapper.toDto(user);

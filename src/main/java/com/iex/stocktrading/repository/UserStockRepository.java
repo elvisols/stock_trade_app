@@ -11,5 +11,5 @@ public interface UserStockRepository extends PagingAndSortingRepository<UserStoc
 
     Page<UserStock> findAllByUser_Username(String username, Pageable pageable);
 
-    Optional<UserStock> findAllByUser_IdAndStock_Symbol(Long user, String stock);
+    Optional<UserStock> findAllByUser_UsernameAndStock_Symbol(String user, String stock);
 }

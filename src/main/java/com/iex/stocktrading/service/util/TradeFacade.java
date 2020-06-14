@@ -1,14 +1,11 @@
 package com.iex.stocktrading.service.util;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.iex.stocktrading.exception.InsufficientStockException;
 import com.iex.stocktrading.exception.UserNotFoundException;
 import com.iex.stocktrading.model.IEXRecord;
 import com.iex.stocktrading.model.Stock;
 import com.iex.stocktrading.model.User;
 import com.iex.stocktrading.model.UserStock;
-import com.iex.stocktrading.model.dto.UserDTO;
 import com.iex.stocktrading.model.dto.UserStockDTO;
 import com.iex.stocktrading.model.dto.mapper.UserMapper;
 import com.iex.stocktrading.model.dto.mapper.UserStockMapper;
@@ -29,15 +26,15 @@ public class TradeFacade {
 
     private String symbol;
     private Integer shares;
-    private final CashAgent agent;
+    private final Agent agent;
     private final UserService userService;
     private final UserStockService usService;
     private final UserStockMapper userStockMapper;
     private final UserMapper userMapper;
 
 
-    public TradeFacade(CashAgent cashAgent, UserService userService, UserStockService usService, UserStockMapper userStockMapper, UserMapper userMapper) {
-        this.agent = cashAgent;
+    public TradeFacade(Agent agent, UserService userService, UserStockService usService, UserStockMapper userStockMapper, UserMapper userMapper) {
+        this.agent = agent;
         this.userService = userService;
         this.usService = usService;
         this.userStockMapper = userStockMapper;
@@ -56,21 +53,19 @@ public class TradeFacade {
         IEXRecord iexRecord = IEXIntegrator.fetch(getSymbol());
 
         if(agent.haveEnoughMoney(getShares() * iexRecord.getLatestPrice())) {
-            // Update User Stock
             User user = userService.findByUsername(SecurityUtils.getCurrentUserLogin().get());
 
-            Optional<UserStockDTO> userStock = usService.findByUserAndStock(user.getId(), getSymbol());
+            Optional<UserStockDTO> userStock = usService.findByUserAndStock(SecurityUtils.getCurrentUserLogin().get(), getSymbol());
+//            Optional<UserStockDTO> userStock = usService.findByUserAndStock(user.getId(), getSymbol());
 
             if(userStock.isPresent()) {
                 // Update User Stock
                 UserStock usrStk = userStockMapper.toEntity(userStock.get());
-                System.out.println(usrStk.getShares() +" updating stock buy..." + getShares());
                 usrStk.setShares(usrStk.getShares() + getShares());
                 usrStk.setCurrentPrice(BigDecimal.valueOf(iexRecord.getLatestPrice()));
 
                 return usService.save(userStockMapper.toDto(usrStk));
             } else {
-                System.out.println("new stock buy...");
                 // Create new User Stock
                 UserStockDTO userStockDTO = new UserStockDTO();
                 userStockDTO.setCurrent_price(BigDecimal.valueOf(iexRecord.getLatestPrice()));
@@ -91,11 +86,11 @@ public class TradeFacade {
         // if Yes, update balance, and UserStock shares
         IEXRecord iexRecord = IEXIntegrator.fetch(getSymbol());
 
-        if(agent.haveEnoughShares(getShares())) {
-            // Update User Stock
+        if(agent.haveEnoughShares(getShares(), getSymbol(), iexRecord.getLatestPrice())) {
             User user = userService.findByUsername(SecurityUtils.getCurrentUserLogin().get());
 
-            Optional<UserStockDTO> userStock = usService.findByUserAndStock(user.getId(), getSymbol());
+            Optional<UserStockDTO> userStock = usService.findByUserAndStock(SecurityUtils.getCurrentUserLogin().get(), getSymbol());
+//            Optional<UserStockDTO> userStock = usService.findByUserAndStock(user.getId(), getSymbol());
 
             if(userStock.isPresent()) {
                 // Update User Stock

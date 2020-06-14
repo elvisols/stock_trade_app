@@ -2,23 +2,28 @@ package com.iex.stocktrading.service.util;
 
 import com.iex.stocktrading.exception.InsufficientBalanceException;
 import com.iex.stocktrading.exception.UserNotFoundException;
+import com.iex.stocktrading.model.UserStock;
 import com.iex.stocktrading.model.dto.UserDTO;
+import com.iex.stocktrading.model.dto.UserStockDTO;
 import com.iex.stocktrading.model.dto.mapper.UserMapper;
 import com.iex.stocktrading.security.SecurityUtils;
 import com.iex.stocktrading.service.UserService;
+import com.iex.stocktrading.service.UserStockService;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.util.Optional;
 
 @Component
-public class CashAgent {
+public class Agent {
 
     private final UserService userService;
+    private final UserStockService usService;
     private final UserMapper userMapper;
 
-    public CashAgent(UserService userService, UserMapper userMapper) {
+    public Agent(UserService userService, UserStockService usService, UserMapper userMapper) {
         this.userService = userService;
+        this.usService = usService;
         this.userMapper = userMapper;
     }
 
@@ -34,18 +39,16 @@ public class CashAgent {
         }
 
     }
-    public double getSharesInAccount() {
+    public double getSharesInAccount(String symbol) {
 
-//        Optional<String> u = SecurityUtils.getCurrentUserLogin();
-//
-//        if(u.isPresent()) {
-//            UserStock user = usService.findByUsername(SecurityUtils.getCurrentUserLogin().get()).get());
-//            return user.getAccount().getBalance().doubleValue();
-//        } else {
-//            throw new UserNotFoundException("User");
-//        }
+        Optional<String> u = SecurityUtils.getCurrentUserLogin();
 
-        return 0.0;
+        if(u.isPresent()) {
+            UserStockDTO userStock = usService.findByUserAndStock(SecurityUtils.getCurrentUserLogin().get(), symbol).get();
+            return userStock.getShares();
+        } else {
+            throw new UserNotFoundException("User");
+        }
     }
 
     public void decreaseCashInAccount(double cashWithdrawn) {
@@ -66,17 +69,14 @@ public class CashAgent {
         }
     }
 
-    public boolean haveEnoughShares(double sharesToSell) {
+    public boolean haveEnoughShares(double sharesToSell, String symbol, double currentPrice) {
 
-        if(sharesToSell > getCashInAccount()) {
+        if(sharesToSell > getSharesInAccount(symbol)) {
             throw new InsufficientBalanceException(String.valueOf(getCashInAccount()));
         } else {
-//            decreaseCashInAccount(cashToWithdrawal);
+            increaseCashInAccount(sharesToSell * currentPrice);
             return true;
         }
     }
 
-    public void makeDeposit(double cashToDeposit) {
-        increaseCashInAccount(cashToDeposit);
-    }
 }

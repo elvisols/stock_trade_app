@@ -89,11 +89,11 @@ public class UserStockServiceImpl implements UserStockService {
     }
 
     @Override
-    public Optional<UserStockDTO> findByUserAndStock(Long id, String stock) {
+    public Optional<UserStockDTO> findByUserAndStock(String user, String stock) {
 
-        log.debug("Request to get UserAndStock : {}", id);
+        log.debug("Request to get UserAndStock : {}", user);
 
-        return userStockRepository.findAllByUser_IdAndStock_Symbol(id, stock)
+        return userStockRepository.findAllByUser_UsernameAndStock_Symbol(user, stock)
                 .map(userStockMapper::toDto);
     }
 
