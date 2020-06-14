@@ -51,10 +51,10 @@ public class UserStockServiceImpl implements UserStockService {
             } else {
                 throw new UserStockNotFoundException(userStock.getId().toString());
             }
-        } else {
-            // create new record
-            userStock = userStockRepository.save(userStock);
         }
+
+        // create new record
+        userStock = userStockRepository.save(userStock);
 
         log.info("returning pojo... {}", userStock);
         log.info("returning dto... {}", userStockMapper.toDto(userStock));
