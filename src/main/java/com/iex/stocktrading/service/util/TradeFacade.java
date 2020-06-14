@@ -1,5 +1,6 @@
 package com.iex.stocktrading.service.util;
 
+import com.iex.stocktrading.exception.InsufficientSharesException;
 import com.iex.stocktrading.exception.InsufficientStockException;
 import com.iex.stocktrading.exception.UserNotFoundException;
 import com.iex.stocktrading.model.IEXRecord;
@@ -56,7 +57,6 @@ public class TradeFacade {
             User user = userService.findByUsername(SecurityUtils.getCurrentUserLogin().get());
 
             Optional<UserStockDTO> userStock = usService.findByUserAndStock(SecurityUtils.getCurrentUserLogin().get(), getSymbol());
-//            Optional<UserStockDTO> userStock = usService.findByUserAndStock(user.getId(), getSymbol());
 
             if(userStock.isPresent()) {
                 // Update User Stock
@@ -90,7 +90,6 @@ public class TradeFacade {
             User user = userService.findByUsername(SecurityUtils.getCurrentUserLogin().get());
 
             Optional<UserStockDTO> userStock = usService.findByUserAndStock(SecurityUtils.getCurrentUserLogin().get(), getSymbol());
-//            Optional<UserStockDTO> userStock = usService.findByUserAndStock(user.getId(), getSymbol());
 
             if(userStock.isPresent()) {
                 // Update User Stock
@@ -104,7 +103,7 @@ public class TradeFacade {
                 throw new UserNotFoundException(getSymbol());
             }
         } else {
-            throw new InsufficientStockException("stock");
+            throw new InsufficientSharesException("stock");
         }
     }
 }

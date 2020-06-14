@@ -1,6 +1,7 @@
 package com.iex.stocktrading.service.util;
 
 import com.iex.stocktrading.exception.InsufficientBalanceException;
+import com.iex.stocktrading.exception.InsufficientSharesException;
 import com.iex.stocktrading.exception.UserNotFoundException;
 import com.iex.stocktrading.model.UserStock;
 import com.iex.stocktrading.model.dto.UserDTO;
@@ -71,8 +72,10 @@ public class Agent {
 
     public boolean haveEnoughShares(double sharesToSell, String symbol, double currentPrice) {
 
-        if(sharesToSell > getSharesInAccount(symbol)) {
-            throw new InsufficientBalanceException(String.valueOf(getCashInAccount()));
+        double current_shares = getSharesInAccount(symbol);
+
+        if(sharesToSell > current_shares) {
+            throw new InsufficientSharesException(String.valueOf(current_shares));
         } else {
             increaseCashInAccount(sharesToSell * currentPrice);
             return true;
