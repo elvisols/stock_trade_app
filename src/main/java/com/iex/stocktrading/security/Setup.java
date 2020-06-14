@@ -2,7 +2,6 @@ package com.iex.stocktrading.security;
 
 import com.iex.stocktrading.service.CustomUserDetailsService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -88,9 +87,7 @@ public class Setup extends WebSecurityConfigurerAdapter {
                 ).permitAll()
                 .antMatchers(HttpMethod.POST, LOGIN_URL).permitAll()
                 .antMatchers(HttpMethod.POST, REGISTER_URL).permitAll()
-//                .antMatchers(HttpMethod.PUT, "/users/**").permitAll()
                 .antMatchers(H2_URL).permitAll()
-//                .antMatchers("/**").permitAll() // for debugging purposes
                 .anyRequest().authenticated();
 
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);

@@ -2,18 +2,26 @@ package com.iex.stocktrading.service;
 
 import com.iex.stocktrading.exception.UserNotFoundException;
 import com.iex.stocktrading.exception.UserStockNotFoundException;
+import com.iex.stocktrading.model.EActivity;
+import com.iex.stocktrading.model.Transaction;
 import com.iex.stocktrading.model.UserStock;
 import com.iex.stocktrading.model.dto.UserStockDTO;
+import com.iex.stocktrading.model.dto.mapper.UserMapper;
 import com.iex.stocktrading.model.dto.mapper.UserStockMapper;
 import com.iex.stocktrading.repository.UserStockRepository;
 import com.iex.stocktrading.security.SecurityUtils;
 import com.iex.stocktrading.service.util.TradeFacade;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.jms.core.JmsMessagingTemplate;
 import org.springframework.stereotype.Service;
 
+import javax.jms.Queue;
+import java.math.BigDecimal;
+import java.util.Date;
 import java.util.Optional;
 
 @Slf4j
@@ -24,12 +32,22 @@ public class UserStockServiceImpl implements UserStockService {
 
     private final UserStockMapper userStockMapper;
 
+    private final UserMapper userMapper;
+
     @Autowired
     private TradeFacade tradeFacade;
 
-    public UserStockServiceImpl(UserStockRepository userStockRepository, UserStockMapper userStockMapper) {
+    @Autowired
+    private JmsMessagingTemplate jmsMessagingTemplate;
+
+    @Autowired
+    @Qualifier("transaction")
+    private Queue queue;
+
+    public UserStockServiceImpl(UserStockRepository userStockRepository, UserStockMapper userStockMapper, UserMapper userMapper) {
         this.userStockRepository = userStockRepository;
         this.userStockMapper = userStockMapper;
+        this.userMapper = userMapper;
     }
 
     @Override
@@ -103,7 +121,20 @@ public class UserStockServiceImpl implements UserStockService {
         tradeFacade.setSymbol(symbol);
         tradeFacade.setShares(shares);
 
-        return Optional.of(tradeFacade.buy());
+        UserStockDTO userStockDTO = tradeFacade.buy();
+
+        // log transaction
+        Transaction trx = new Transaction();
+        trx.setActivity(EActivity.buy);
+        trx.setAmount(userStockDTO.getCurrent_price().multiply(BigDecimal.valueOf(shares)));
+        trx.setShares(shares);
+        trx.setUser(userMapper.toEntity(userStockDTO.getUser()));
+        trx.setStock(userStockDTO.getStock());
+
+        // async log
+        this.jmsMessagingTemplate.convertAndSend(this.queue, trx);
+
+        return Optional.of(userStockDTO);
     }
 
     @Override
@@ -112,7 +143,20 @@ public class UserStockServiceImpl implements UserStockService {
         tradeFacade.setSymbol(symbol);
         tradeFacade.setShares(shares);
 
-        return Optional.of(tradeFacade.sell());
+        UserStockDTO userStockDTO = tradeFacade.sell();
+
+        // log transaction
+        Transaction trx = new Transaction();
+        trx.setActivity(EActivity.sell);
+        trx.setAmount(userStockDTO.getCurrent_price().multiply(BigDecimal.valueOf(shares)));
+        trx.setShares(shares);
+        trx.setUser(userMapper.toEntity(userStockDTO.getUser()));
+        trx.setStock(userStockDTO.getStock());
+
+        // async log
+        this.jmsMessagingTemplate.convertAndSend(this.queue, trx);
+
+        return Optional.of(userStockDTO);
     }
 
 }

@@ -44,7 +44,7 @@ public class UserStocksController {
     }
 
     @GetMapping
-    public ResponseEntity<?> getAllStocksByUser(Pageable pageable) {//@RequestParam(defaultValue = "0") Long user,
+    public ResponseEntity<?> getAllStocksByUser(Pageable pageable) {
 
         Page<UserStockDTO> userStocks = usService.findAllByUser(pageable);
 

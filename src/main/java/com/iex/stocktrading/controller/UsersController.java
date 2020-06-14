@@ -47,6 +47,16 @@ public class UsersController {
         return new ResponseEntity<ResponseWrapper>(new ResponseWrapper(userDTOs), HttpStatus.OK);
     }
 
+    @GetMapping("/transactions")
+    public ResponseEntity<?> getAllTransactions(@RequestParam(required = false) String start, @RequestParam(required = false) String end, Pageable pageable) {
+
+        Page<UserDTO> userDTOs = userService.findAll(pageable);
+
+        log.debug("Getting all users: {}", userDTOs);
+
+        return new ResponseEntity<ResponseWrapper>(new ResponseWrapper(userDTOs), HttpStatus.OK);
+    }
+
     @GetMapping("/{id}")
     public UserDTO getUser(@PathVariable Long id) {
         Optional<UserDTO> userDTO = userService.findOne(id);

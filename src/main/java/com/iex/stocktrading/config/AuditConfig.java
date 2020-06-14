@@ -2,6 +2,7 @@ package com.iex.stocktrading.config;
 
 
 import org.apache.activemq.command.ActiveMQQueue;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.jms.support.converter.MappingJackson2MessageConverter;
@@ -23,8 +24,15 @@ public class AuditConfig implements AuditorAware<String> {
     }
 
     @Bean
-    public Queue queue() {
+    @Qualifier("audit")
+    public Queue auditQueue() {
         return new ActiveMQQueue("auditlog.queue");
+    }
+
+    @Bean
+    @Qualifier("transaction")
+    public Queue transactionQueue() {
+        return new ActiveMQQueue("transaction.queue");
     }
 
     @Bean

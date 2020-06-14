@@ -7,6 +7,7 @@ import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jms.core.JmsMessagingTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.AbstractRequestLoggingFilter;
@@ -26,6 +27,7 @@ public class AuditLogHandler extends AbstractRequestLoggingFilter {
     private JmsMessagingTemplate jmsMessagingTemplate;
 
     @Autowired
+    @Qualifier("audit")
     private Queue queue;
 
     private static long starttime;
