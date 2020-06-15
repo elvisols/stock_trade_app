@@ -93,8 +93,6 @@ public class UserStockServiceImpl implements UserStockService {
         } else {
             throw new UserNotFoundException("User");
         }
-
-
     }
 
     @Override

@@ -48,7 +48,7 @@ public class UserStocksController {
 
         Page<UserStockDTO> userStocks = usService.findAllByUser(pageable);
 
-        log.debug("Returning all user stocks: {}", userStocks);
+        log.info("Returning all user stocks: {}", userStocks);
 
         return new ResponseEntity<ResponseWrapper>(new ResponseWrapper(userStocks), HttpStatus.OK);
     }
@@ -83,9 +83,7 @@ public class UserStocksController {
 
         Optional<UserStockDTO> newStock = usService.buy(stock_symbol, reqBody.getShares());
 
-        System.out.println(newStock);
-
-//        if(!newStock.isPresent()) throw new UserStockNotFoundException(stock_symbol);
+        if(!newStock.isPresent()) throw new UserStockNotFoundException(stock_symbol);
 
         return  new ResponseEntity<UserStockDTO>(newStock.get(), HttpStatus.OK);
     }

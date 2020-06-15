@@ -1,4 +1,4 @@
-package com.iex.stocktrading.service;
+package com.iex.stocktrading;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.iex.stocktrading.model.dto.NewUserDTO;
@@ -7,6 +7,7 @@ import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -32,25 +33,25 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringRunner.class)
 @AutoConfigureRestDocs(outputDir = "target/generated-snippets")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class UserStockServiceIntegrationTests {
+public class UserUnitTests {
 
     @Autowired
     private MockMvc mvc;
 
-    @Test
-    public void storeStockTests() throws Exception {
+    @Value("${test.jwt.token}")
+    private String token;
 
-        UserDTO u = getUser();
+    @Test
+    public void getSymbolsTests() throws Exception {
 
         String user = "{\n" +
-                "    \"user\": {" +
-                "    \"id\": "+u.getId()+ ",\n" +
-                "    },\n" +
-                "    \"stock\": {" +
-                "    \"symbol\": AAPL,\n" +
-                "    },\n" +
-                "    \"shares\": 6,\n" +
-                "    \"current_price\": 23.4 \n" +
+                "    \"full_name\": \"Ben Foe\",\n" +
+                "    \"age\": 25,\n" +
+                "    \"email\": \"bfoe@example.com\",\n" +
+                "    \"username\": \"boe\",\n" +
+                "    \"password\": \"passiton\",\n" +
+                "    \"confirm_password\": \"passiton\",\n" +
+                "    \"account\": \"220122334\"\n" +
                 "}";
 
         ConstraintDescriptions constraintDescriptions = new ConstraintDescriptions(NewUserDTO.class);
@@ -118,6 +119,7 @@ public class UserStockServiceIntegrationTests {
         ConstraintDescriptions constraintDescriptions = new ConstraintDescriptions(NewUserDTO.class);
 
         this.mvc.perform(put("/users/" + u.getId())
+                .header("Authorization", "Bearer " + token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(user)
                 .accept(MediaType.APPLICATION_JSON))

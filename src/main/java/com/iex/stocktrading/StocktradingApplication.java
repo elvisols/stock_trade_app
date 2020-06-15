@@ -34,6 +34,7 @@ public class StocktradingApplication implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
 
+        System.out.println("----------------->>>     Application data loading...");
         // Bootstrap available Stocks
         ResponseEntity<Stock[]> response = restTemplate.getForEntity("https://cloud-sse.iexapis.com/stable/ref-data/symbols?token=" + IEX_TOKEN, Stock[].class);
 
@@ -41,7 +42,7 @@ public class StocktradingApplication implements CommandLineRunner {
 
         stockService.saveAll(Arrays.asList(stocks));
 
-        System.out.println("----------------->>>     Application ready !       <<<---------------------");
+        System.out.println("                          Application loaded !       <<<---------------------");
 
     }
 }
