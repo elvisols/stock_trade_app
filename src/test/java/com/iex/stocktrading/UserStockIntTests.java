@@ -29,6 +29,7 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.restdocs.snippet.Attributes.key;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -51,7 +52,7 @@ public class UserStockIntTests {
     }
 
     @Test
-    public void registerUserTests() throws Exception {
+    public void registerUserTest() throws Exception {
 
         String user = "{\n" +
                 "    \"full_name\": \"John Foe\",\n" +
@@ -112,7 +113,7 @@ public class UserStockIntTests {
 
 
     @Test
-    public void fundAccountTests() throws Exception {
+    public void fundAccountTest() throws Exception {
 
         UserDTO userDTO = new UserDTO();
         userDTO.setId(1L);
@@ -149,13 +150,14 @@ public class UserStockIntTests {
 
 
     @Test
-    public void getSymbolsTests() throws Exception {
+    public void getSymbolsTest() throws Exception {
 
         this.mvc.perform(get("/user-stocks/symbols")
                 .header("Authorization", "Bearer " + token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andDo(print());
     }
 
     @Test

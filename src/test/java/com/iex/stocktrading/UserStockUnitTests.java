@@ -71,7 +71,7 @@ public class UserStockUnitTests {
     }
 
     @Test
-    public void getAllStocksByUserTests() throws Exception {
+    public void getAllStocksByUserTest() throws Exception {
 
         UserDTO userDTO = new UserDTO();
         userDTO.setId(1L);
@@ -135,7 +135,7 @@ public class UserStockUnitTests {
     }
 
     @Test
-    public void getCurrentStockPriceTests() throws Exception {
+    public void getCurrentStockPriceTest() throws Exception {
 
         IEXRecord iexRecord = new IEXRecord();
         iexRecord.setSymbol("NFLX");
@@ -186,7 +186,7 @@ public class UserStockUnitTests {
     }
 
     @Test
-    public void buyStockTests() throws Exception {
+    public void buyStockTest() throws Exception {
 
         UserDTO userDTO = new UserDTO();
         userDTO.setId(1L);
@@ -246,7 +246,7 @@ public class UserStockUnitTests {
     }
 
     @Test
-    public void sellStockTests() throws Exception {
+    public void sellStockTest() throws Exception {
 
         UserDTO userDTO = new UserDTO();
         userDTO.setId(1L);
@@ -307,7 +307,7 @@ public class UserStockUnitTests {
 
 
     @Test
-    public void getTransactionSummaryTests() throws Exception {
+    public void getTransactionSummaryTest() throws Exception {
 
         TransactionDTO transaction = new TransactionDTO();
         transaction.setShares(23);

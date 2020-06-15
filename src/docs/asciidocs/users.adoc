@@ -1,88 +1,17 @@
-== Person REST API
-Person-Controller
-
-=== User Authentication
-This endpoint returns a valid jwt token, upon successful authentication, to access secured resources.
-
-==== Sample Request structure
-[source,json]
-include::{snippets}/person-controller-tests/login-person-test/http-request.adoc[]
-
-include::{snippets}/person-controller-tests/login-person-test/request-fields.adoc[]
-
-==== Sample Response structure
-[source,json]
-include::{snippets}/person-controller-tests/login-person-test/response-body.adoc[]
-include::{snippets}/person-controller-tests/login-person-test/response-fields.adoc[]
+== User Service
+User-Controller
 
 
-=== Get Persons
-This endpoint returns all the persons registered as humans.
+=== Fund Account
 
 ==== Sample Request structure
-include::{snippets}/person-controller-tests/get-persons-test/request-parameters.adoc[]
+include::{snippets}/user-stock-int-tests/fund-account-test/path-parameters.adoc[]
 
 [source,python]
-include::{snippets}/person-controller-tests/get-persons-test/http-request.adoc[]
+include::{snippets}/user-stock-int-tests/fund-account-test/http-request.adoc[]
 
 ==== Sample Response structure
 [source,json]
-include::{snippets}/person-controller-tests/get-persons-test/response-body.adoc[]
-include::{snippets}/person-controller-tests/get-persons-test/response-fields.adoc[]
+include::{snippets}/user-stock-int-tests/fund-account-test/response-body.adoc[]
+include::{snippets}/user-stock-int-tests/fund-account-test/response-fields.adoc[]
 
-=== Get Person
-This endpoint returns a registered person.
-
-==== Sample Request structure
-include::{snippets}/person-controller-tests/get-person-test/path-parameters.adoc[]
-
-[source,python]
-include::{snippets}/person-controller-tests/get-person-test/http-request.adoc[]
-
-==== Sample Response structure
-[source,json]
-include::{snippets}/person-controller-tests/get-person-test/response-body.adoc[]
-include::{snippets}/person-controller-tests/get-person-test/response-fields.adoc[]
-
-=== Store Person
-This endpoint stores and returns the just created person.
-
-==== Sample Request structure
-[source,json]
-include::{snippets}/person-controller-tests/store-person-test/http-request.adoc[]
-
-include::{snippets}/person-controller-tests/store-person-test/request-fields.adoc[]
-
-==== Sample Response structure
-[source,json]
-include::{snippets}/person-controller-tests/store-person-test/response-body.adoc[]
-include::{snippets}/person-controller-tests/store-person-test/response-fields.adoc[]
-
-=== Update Person
-This endpoint updates and returns the updated person.
-
-==== Sample Request structure
-include::{snippets}/person-controller-tests/update-person-test/path-parameters.adoc[]
-
-[source,json]
-include::{snippets}/person-controller-tests/update-person-test/http-request.adoc[]
-
-include::{snippets}/person-controller-tests/update-person-test/request-fields.adoc[]
-
-==== Sample Response structure
-[source,json]
-include::{snippets}/person-controller-tests/update-person-test/response-body.adoc[]
-include::{snippets}/person-controller-tests/update-person-test/response-fields.adoc[]
-
-=== Delete Person
-This endpoint deletes a registered person by its `<id>`.
-
-==== Sample Request structure
-include::{snippets}/person-controller-tests/delete-person-test/path-parameters.adoc[]
-
-[source,python]
-include::{snippets}/person-controller-tests/delete-person-test/http-request.adoc[]
-
-==== Sample Response structure
-[source,json]
-include::{snippets}/person-controller-tests/delete-person-test/response-body.adoc[]

@@ -1,7 +1,7 @@
 
-= User REST Service API Guide
+= Stock Trading Developers Documentation
 <elvisouk@yahoo.com>
-v1.0.0, 03/02/2020
+v1.0.0, 15/06/2020
 :toc: right
 :toc-title: API Content
 :sectnums:
@@ -10,11 +10,13 @@ v1.0.0, 03/02/2020
 :source-highlighter: pygments
 
 [NOTE]
-Webservice running at http://localhost:8899
+Webservice running at http://localhost:8880
 
 == Introduction
-This is a simple REST API that stores, updates, retrieves, and deletes User entities.
+This documentation is a developer's guide to how the Stock Trading REST API is consumed.
 
+include::auth.adoc[]
 include::users.adoc[]
+include::userstocks.adoc[]
 
 include::footer.adoc[]

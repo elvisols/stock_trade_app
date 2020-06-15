@@ -1,0 +1,68 @@
+== User Stock REST API
+UserStock-Controller
+
+
+=== Get Stocks By User
+
+==== Sample Request structure
+include::{snippets}/user-stock-unit-tests/get-all-stocks-by-user-test/request-parameters.adoc[]
+
+[source,python]
+include::{snippets}/user-stock-unit-tests/get-all-stocks-by-user-test/http-request.adoc[]
+
+==== Sample Response structure
+[source,json]
+include::{snippets}/user-stock-unit-tests/get-all-stocks-by-user-test/response-body.adoc[]
+include::{snippets}/user-stock-unit-tests/get-all-stocks-by-user-test/response-fields.adoc[]
+
+=== Get Current Stock Price
+
+==== Sample Request structure
+include::{snippets}/user-stock-unit-tests/get-current-stock-price-test/path-parameters.adoc[]
+
+[source,python]
+include::{snippets}/user-stock-unit-tests/get-current-stock-price-test/http-request.adoc[]
+
+==== Sample Response structure
+[source,json]
+include::{snippets}/user-stock-unit-tests/get-current-stock-price-test/response-body.adoc[]
+include::{snippets}/user-stock-unit-tests/get-current-stock-price-test/response-fields.adoc[]
+
+=== Buy Stock
+
+==== Sample Request structure
+include::{snippets}/user-stock-unit-tests/buy-stock-test/path-parameters.adoc[]
+
+[source,json]
+include::{snippets}/user-stock-unit-tests/buy-stock-test/http-request.adoc[]
+
+==== Sample Response structure
+[source,json]
+include::{snippets}/user-stock-unit-tests/buy-stock-test/response-body.adoc[]
+include::{snippets}/user-stock-unit-tests/buy-stock-test/response-fields.adoc[]
+
+=== Sell Stock
+
+==== Sample Request structure
+include::{snippets}/user-stock-unit-tests/sell-stock-test/path-parameters.adoc[]
+
+[source,json]
+include::{snippets}/user-stock-unit-tests/sell-stock-test/http-request.adoc[]
+
+==== Sample Response structure
+[source,json]
+include::{snippets}/user-stock-unit-tests/sell-stock-test/response-body.adoc[]
+include::{snippets}/user-stock-unit-tests/sell-stock-test/response-fields.adoc[]
+
+=== Get Transaction Summary
+
+==== Sample Request structure
+include::{snippets}/user-stock-unit-tests/get-transaction-summary-test/request-parameters.adoc[]
+
+[source,python]
+include::{snippets}/user-stock-unit-tests/get-transaction-summary-test/http-request.adoc[]
+
+==== Sample Response structure
+[source,json]
+include::{snippets}/user-stock-unit-tests/get-transaction-summary-test/response-body.adoc[]
+include::{snippets}/user-stock-unit-tests/get-transaction-summary-test/response-fields.adoc[]

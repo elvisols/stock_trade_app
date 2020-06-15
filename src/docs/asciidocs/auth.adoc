@@ -1,0 +1,30 @@
+== Authentication Service
+AuthController
+
+=== Login
+This endpoint returns a valid jwt token, upon successful authentication, to access secured resources.
+
+==== Sample Request structure
+[source,json]
+include::{snippets}/user-stock-int-tests/login-test/http-request.adoc[]
+
+include::{snippets}/user-stock-int-tests/login-test/request-fields.adoc[]
+
+==== Sample Response structure
+[source,json]
+include::{snippets}/user-stock-int-tests/login-test/response-body.adoc[]
+include::{snippets}/user-stock-int-tests/login-test/response-fields.adoc[]
+
+
+=== Register User
+
+==== Sample Request structure
+[source,json]
+include::{snippets}/user-stock-int-tests/register-user-test/http-request.adoc[]
+
+include::{snippets}/user-stock-int-tests/register-user-test/request-fields.adoc[]
+
+==== Sample Response structure
+[source,json]
+include::{snippets}/user-stock-int-tests/register-user-test/response-body.adoc[]
+include::{snippets}/user-stock-int-tests/register-user-test/response-fields.adoc[]
