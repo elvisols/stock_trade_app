@@ -19,6 +19,8 @@
         <mapstruct.version>1.2.0.Final</mapstruct.version>
         <asciidoctor-plugin.version>1.5.8</asciidoctor-plugin.version>
         <snippetsDirectory>${project.build.directory}/generated-snippets</snippetsDirectory>
+        <docker.image.prefix>elvisols</docker.image.prefix>
+        <docker.image.name>stocktrading</docker.image.name>
     </properties>
 
     <dependencies>
@@ -107,6 +109,32 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.gmavenplus</groupId>
+                <artifactId>gmavenplus-plugin</artifactId>
+                <version>1.5</version>
+                <executions>
+                    <execution>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>execute</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <scripts>
+                        <script>file:///${project.basedir}/src/main/scripts/BuildDockerfile.groovy</script>
+                    </scripts>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.codehaus.groovy</groupId>
+                        <artifactId>groovy-all</artifactId>
+                        <version>2.4.8</version>
+                        <scope>runtime</scope>
+                    </dependency>
+                </dependencies>
             </plugin>
             <plugin>
                 <groupId>org.asciidoctor</groupId>

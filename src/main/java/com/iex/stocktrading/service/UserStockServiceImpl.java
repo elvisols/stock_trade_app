@@ -5,9 +5,12 @@ import com.iex.stocktrading.exception.UserStockNotFoundException;
 import com.iex.stocktrading.model.EActivity;
 import com.iex.stocktrading.model.Transaction;
 import com.iex.stocktrading.model.UserStock;
+import com.iex.stocktrading.model.dto.TransactionDTO;
 import com.iex.stocktrading.model.dto.UserStockDTO;
+import com.iex.stocktrading.model.dto.mapper.TransactionMapper;
 import com.iex.stocktrading.model.dto.mapper.UserMapper;
 import com.iex.stocktrading.model.dto.mapper.UserStockMapper;
+import com.iex.stocktrading.repository.TransactionRepository;
 import com.iex.stocktrading.repository.UserStockRepository;
 import com.iex.stocktrading.security.SecurityUtils;
 import com.iex.stocktrading.service.util.TradeFacade;
@@ -34,6 +37,11 @@ public class UserStockServiceImpl implements UserStockService {
 
     private final UserMapper userMapper;
 
+    private final TransactionRepository transactionRepository;
+
+    private final TransactionMapper transactionMapper;
+
+
     @Autowired
     private TradeFacade tradeFacade;
 
@@ -44,10 +52,13 @@ public class UserStockServiceImpl implements UserStockService {
     @Qualifier("transaction")
     private Queue queue;
 
-    public UserStockServiceImpl(UserStockRepository userStockRepository, UserStockMapper userStockMapper, UserMapper userMapper) {
+    public UserStockServiceImpl(UserStockRepository userStockRepository, UserStockMapper userStockMapper, UserMapper userMapper, TransactionRepository transactionRepository, TransactionMapper transactionMapper) {
         this.userStockRepository = userStockRepository;
         this.userStockMapper = userStockMapper;
         this.userMapper = userMapper;
+        this.transactionRepository = transactionRepository;
+        this.transactionMapper = transactionMapper;
+
     }
 
     @Override
@@ -155,6 +166,21 @@ public class UserStockServiceImpl implements UserStockService {
         this.jmsMessagingTemplate.convertAndSend(this.queue, trx);
 
         return Optional.of(userStockDTO);
+    }
+
+
+    @Override
+    public Page<TransactionDTO> getTransactionSummary(EActivity activity, Date from, Date to, Pageable pageable) {
+
+        Optional<String> loginUser = SecurityUtils.getCurrentUserLogin();
+
+        if(activity.compareTo(EActivity.all) == 0) {
+            // fetch all transactions
+            return transactionRepository.findAllByUser_UsernameAndTimestampBetween(loginUser.get(), from, to, pageable).map(transactionMapper::toDto);
+        } else {
+            // fetch transactions by activities performed.
+            return transactionRepository.findAllByUser_UsernameAndActivityAndTimestampBetween(loginUser.get(), activity, from, to, pageable).map(transactionMapper::toDto);
+        }
     }
 
 }

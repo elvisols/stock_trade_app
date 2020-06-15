@@ -3,9 +3,11 @@ package com.iex.stocktrading.controller;
 import com.iex.stocktrading.exception.UserStockNotFoundException;
 import com.iex.stocktrading.helper.MapValidationErrorHandler;
 import com.iex.stocktrading.helper.ResponseWrapper;
+import com.iex.stocktrading.model.EActivity;
 import com.iex.stocktrading.model.IEXRecord;
 import com.iex.stocktrading.model.Stock;
 import com.iex.stocktrading.model.dto.NewUserDTO;
+import com.iex.stocktrading.model.dto.TransactionDTO;
 import com.iex.stocktrading.model.dto.UserStockDTO;
 import com.iex.stocktrading.service.StockService;
 import com.iex.stocktrading.service.UserStockService;
@@ -15,6 +17,7 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -25,6 +28,7 @@ import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.Optional;
 
 @Slf4j
@@ -51,6 +55,18 @@ public class UserStocksController {
         log.info("Returning all user stocks: {}", userStocks);
 
         return new ResponseEntity<ResponseWrapper>(new ResponseWrapper(userStocks), HttpStatus.OK);
+    }
+
+
+    @GetMapping("/transactions")
+    public Page<TransactionDTO> getAllTransactions(
+            // start default from 3 days ago
+            @RequestParam(required = false, defaultValue = "#{new java.util.Date((new java.util.Date()).getTime()-3*24*60*60*1000)}") @DateTimeFormat(pattern="yyyy-MM-dd") Date from,
+            @RequestParam(required = false, defaultValue = "#{new java.util.Date()}") @DateTimeFormat(pattern="yyyy-MM-dd") Date to,
+            @RequestParam(required = false, defaultValue = "all" ) EActivity activity,
+            Pageable pageable) {
+
+        return usService.getTransactionSummary(activity, from, to, pageable);
     }
 
     @GetMapping("/{id}")

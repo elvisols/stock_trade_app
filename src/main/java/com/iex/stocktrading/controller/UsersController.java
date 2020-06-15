@@ -51,17 +51,6 @@ public class UsersController {
         return new ResponseEntity<ResponseWrapper>(new ResponseWrapper(userDTOs), HttpStatus.OK);
     }
 
-    @GetMapping("/transactions")
-    public Page<TransactionDTO> getAllTransactions(
-            // start default from 3 days ago
-            @RequestParam(required = false, defaultValue = "#{new java.util.Date((new java.util.Date()).getTime()-3*24*60*60*1000)}") @DateTimeFormat(pattern="yyyy-MM-dd") Date from,
-            @RequestParam(required = false, defaultValue = "#{new java.util.Date()}") @DateTimeFormat(pattern="yyyy-MM-dd") Date to,
-            @RequestParam(required = false, defaultValue = "all" ) EActivity activity,
-            Pageable pageable) {
-
-        return userService.getTransactionSummary(activity, from, to, pageable);
-    }
-
     @GetMapping("/{id}")
     public UserDTO getUser(@PathVariable Long id) {
         Optional<UserDTO> userDTO = userService.findOne(id);

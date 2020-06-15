@@ -1,17 +1,21 @@
 package com.iex.stocktrading;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.iex.stocktrading.model.EActivity;
 import com.iex.stocktrading.model.IEXRecord;
 import com.iex.stocktrading.model.Stock;
 import com.iex.stocktrading.model.dto.NewUserDTO;
+import com.iex.stocktrading.model.dto.TransactionDTO;
 import com.iex.stocktrading.model.dto.UserDTO;
 import com.iex.stocktrading.model.dto.UserStockDTO;
 import com.iex.stocktrading.service.StockService;
+import com.iex.stocktrading.service.UserService;
 import com.iex.stocktrading.service.UserStockService;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
@@ -29,9 +33,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -73,7 +75,7 @@ public class UserStockUnitTests {
 
     @BeforeEach
     public void setup() throws Exception {
-        getUser();
+         getUser();
     }
 
     @Test
@@ -311,7 +313,64 @@ public class UserStockUnitTests {
         verify(usService, times(1)).sell(anyString(), anyInt());
     }
 
-    private NewUserDTO getUser() throws Exception {
+
+    @Test
+    public void getTransactionSummaryTests() throws Exception {
+
+        TransactionDTO transaction = new TransactionDTO();
+        transaction.setShares(23);
+        transaction.setActivity(EActivity.buy.toString());
+        transaction.setAmount(250.1);
+        transaction.setTimestamp(new Date());
+        transaction.setUser("Uzer");
+        transaction.setStock("AAPL");
+
+        given(this.usService.getTransactionSummary(any(), any(), any(), any(Pageable.class))).willReturn(new PageImpl<>(Arrays.asList(transaction)));
+
+        this.mvc.perform(get("/user-stocks/transactions")
+                .header("Authorization", "Bearer " + token)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content[0].stock", Matchers.is("AAPL")))
+                .andExpect(jsonPath("$.content[0].shares", Matchers.is(23)))
+                .andDo(
+                        document("{class-name}/{method-name}",
+                                preprocessRequest(prettyPrint()),
+                                preprocessResponse(prettyPrint()),
+                                requestParameters(
+                                        parameterWithName("from").description("Filter the transaction records from a specific date... [yyyy-MM-dd]. Defaults to 3 days ago").optional(),
+                                        parameterWithName("to").description("Filter the transaction records to a specific date... [yyyy-MM-dd]. Defaults to now.").optional(),
+                                        parameterWithName("all").description("Filter the transactions by activities performed... Enum{buy|sell|all}. Defaults to all").optional()
+                                ),
+                                responseFields(
+                                        fieldWithPath("content[].shares").description("Shares count sold or bought").type(JsonFieldType.NUMBER),
+                                        fieldWithPath("content[].activity").description("Activity recorded... Enum{buy|sell|all}").type(JsonFieldType.STRING),
+                                        fieldWithPath("content[].amount").description("Transaction amount").type(JsonFieldType.NUMBER),
+                                        fieldWithPath("content[].timestamp").description("Transaction timestamp").type(JsonFieldType.STRING),
+                                        fieldWithPath("content[].user").description("User buyer or seller").type(JsonFieldType.STRING),
+                                        fieldWithPath("content[].stock").description("Stock sold or purchased").type(JsonFieldType.STRING),
+                                        fieldWithPath("pageable").description("Pageable instance").type(JsonFieldType.STRING),
+                                        fieldWithPath("last").description("Last record view").type(JsonFieldType.BOOLEAN),
+                                        fieldWithPath("totalPages").description("Page total").type(JsonFieldType.NUMBER),
+                                        fieldWithPath("totalElements").description("Total Element").type(JsonFieldType.NUMBER),
+                                        fieldWithPath("size").description("Page size").type(JsonFieldType.NUMBER),
+                                        fieldWithPath("number").description("Number count").type(JsonFieldType.NUMBER),
+                                        fieldWithPath("numberOfElements").description("Number of Element").type(JsonFieldType.NUMBER),
+                                        fieldWithPath("first").description("First record view").type(JsonFieldType.BOOLEAN),
+                                        fieldWithPath("sort.sorted").description("Sorted record").type(JsonFieldType.BOOLEAN),
+                                        fieldWithPath("sort.unsorted").description("Unsorted record").type(JsonFieldType.BOOLEAN),
+                                        fieldWithPath("sort.empty").description("Empty record").type(JsonFieldType.BOOLEAN),
+                                        fieldWithPath("empty").description("Is record Empty").type(JsonFieldType.BOOLEAN)
+                                )
+                        )
+                );
+
+        verify(usService, times(1)).getTransactionSummary(any(), any(), any(), any());
+    }
+
+
+    private void getUser() throws Exception {
         // insert record
         String new_user = "{\n" +
                 "    \"full_name\": \"Ben Foe2\",\n" +
@@ -326,12 +385,6 @@ public class UserStockUnitTests {
         MvcResult res = this.mvc.perform(post("/users")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(new_user)).andReturn();
-
-        ObjectMapper mapper = new ObjectMapper();
-
-        NewUserDTO user = mapper.readValue(res.getResponse().getContentAsString(), NewUserDTO.class);
-
-        return user;
     }
 
 }

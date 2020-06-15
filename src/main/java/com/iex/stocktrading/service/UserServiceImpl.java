@@ -31,19 +31,15 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
-    private final TransactionRepository transactionRepository;
     private final BCryptPasswordEncoder encoder;
     private final UserMapper userMapper;
     private final NewUserMapper newUserMapper;
-    private final TransactionMapper transactionMapper;
 
-    public UserServiceImpl(UserRepository userRepository, StockRepository stockRepository, BCryptPasswordEncoder encoder, UserMapper userMapper, NewUserMapper newUserMapper, TransactionRepository transactionRepository, TransactionMapper transactionMapper) {
+    public UserServiceImpl(UserRepository userRepository, StockRepository stockRepository, BCryptPasswordEncoder encoder, UserMapper userMapper, NewUserMapper newUserMapper) {
         this.userRepository = userRepository;
-        this.transactionRepository = transactionRepository;
         this.encoder = encoder;
         this.userMapper = userMapper;
         this.newUserMapper = newUserMapper;
-        this.transactionMapper = transactionMapper;
     }
 
     @Override
@@ -156,20 +152,6 @@ public class UserServiceImpl implements UserService {
         log.debug("Request to delete User: {}", id);
 
         userRepository.deleteById(id);
-    }
-
-    @Override
-    public Page<TransactionDTO> getTransactionSummary(EActivity activity, Date from, Date to, Pageable pageable) {
-
-        Optional<String> loginUser = SecurityUtils.getCurrentUserLogin();
-
-        if(activity.compareTo(EActivity.all) == 0) {
-            // fetch all transactions
-            return transactionRepository.findAllByUser_UsernameAndTimestampBetween(loginUser.get(), from, to, pageable).map(transactionMapper::toDto);
-        } else {
-            // fetch transactions by activities performed.
-            return transactionRepository.findAllByUser_UsernameAndActivityAndTimestampBetween(loginUser.get(), activity, from, to, pageable).map(transactionMapper::toDto);
-        }
     }
 
     public Optional<User> findById(Long id) {

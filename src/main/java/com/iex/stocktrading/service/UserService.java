@@ -56,14 +56,4 @@ public interface UserService {
      */
     void delete(Long id);
 
-    /**
-     * Get transaction summary
-     * @param activity
-     * @param start
-     * @param end
-     * @param pageable
-     * @return
-     */
-    Page<TransactionDTO> getTransactionSummary(EActivity activity, Date start, Date end, Pageable pageable);
-    
 }
