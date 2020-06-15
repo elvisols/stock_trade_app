@@ -33,7 +33,7 @@ This is a fully containerized stock trading application with the following featu
 ~$ mvn clean package docker:build
 ```
 
-Once the service is up, the application documentation can be accessed via
+Once the service is up, the application documentation can be accessed, from the source folder, via
 
 `./target/generated-docs/index.html`
 
